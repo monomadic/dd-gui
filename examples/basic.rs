@@ -31,7 +31,7 @@ fn main() {
         let now = std::time::Instant::now();
         let duration_since_last_update = now.duration_since(last_update);
 
-        let sixteen_ms = std::time::Duration::from_millis(116);
+        let sixteen_ms = std::time::Duration::from_millis(50);
 
         if duration_since_last_update < sixteen_ms {
             std::thread::sleep(sixteen_ms - duration_since_last_update)
