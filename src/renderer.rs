@@ -23,8 +23,14 @@ pub struct Renderer {
     pub display: glium::Display,
     pub triangle_program: glium::Program,
     pub instructions: Vec<RenderElement>,
-    pub projection: [[f32; 4]; 4],
 }
+
+#[derive(Copy, Clone)]
+struct Vertex {
+    position: [f32; 2],
+}
+
+implement_vertex!(Vertex, position);
 
 impl Renderer{
     pub fn new(display: glium::Display) -> Renderer {
@@ -36,7 +42,6 @@ impl Renderer{
             display: display,
             instructions: Vec::new(),
             triangle_program: triangle_program,
-            projection: cgmath::ortho(0.0, points.0 as f32, 0.0, points.1 as f32, -1.0, 1.0).into(),
         }
     }
 
@@ -48,24 +53,21 @@ impl Renderer{
         (points.0 as f32, points.1 as f32)
     }
 
+
+
     pub fn render(&mut self) {
         let mut target = self.display.draw();
         target.clear_color(0.1, 0.1, 0.1, 1.0);
 
+        let (view_width, view_height) = self.get_inner_size_points();
+        let projection: [[f32; 4]; 4] = cgmath::ortho(0.0, view_width, 0.0, view_height, -1.0, 1.0).into();
+
         for instruction in self.instructions.clone() {
             match instruction {
                 RenderElement::Triangle(position) => {
-                    let (view_width, view_height) = self.get_inner_size_points();
-
-                    #[derive(Copy, Clone)]
-                    struct Vertex {
-                        position: [f32; 2],
-                    }
-
-                    implement_vertex!(Vertex, position);
 
                     let uniforms = uniform! {
-                        ortho_projection: self.projection,
+                        ortho_projection: projection,
                         u_resolution: [view_width, view_height],
                         scale_matrix: [
                             [ (position.width / view_width), 0., 0., 0. ], // x
