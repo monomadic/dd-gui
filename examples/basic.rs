@@ -36,6 +36,14 @@ fn main() {
         if duration_since_last_update < sixteen_ms {
             std::thread::sleep(sixteen_ms - duration_since_last_update)
         } else {
+            for event in renderer.display.poll_events() {
+                match event {
+                    glutin::Event::Closed => break 'main,
+                    glutin::Event::KeyboardInput(glutin::ElementState::Pressed, _, Some(glutin::VirtualKeyCode::Escape)) => break 'main,
+                    _ => ()
+                }
+            }
+
             Triangle::new(Rect{ origin: Point{ x:0, y:0 }, width:100, height:100 })
                 .set(&mut renderer);
 
