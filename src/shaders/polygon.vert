@@ -8,5 +8,5 @@ in vec2 position;
 
 void main() {
     vec4 position_matrix = vec4(0.1, 0.1, 0.0, 1.0);
-    gl_Position = vec4(position, 0.0, 1.0) * scale_matrix * offset_matrix;
+    gl_Position = ortho_projection * vec4(position, 0.0, 1.0);
 }

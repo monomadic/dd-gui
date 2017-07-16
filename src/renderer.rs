@@ -76,8 +76,8 @@ impl Renderer{
                             [ 0., 0., 0., 1.0f32 ],
                         ],
                         offset_matrix: [
-                            [ 1., 0., 0., (position.origin.x / view_width) ], // x
-                            [ 0., 1., 0., (position.origin.y / view_height) ], // y
+                            [ 1., 0., 0., (view_width / 2.0) + position.origin.x ], // x
+                            [ 0., 1., 0., (view_height / 2.0) + position.origin.y ], // y
                             [ 0., 0., 1., 1. ], // z
                             [ 0., 0., 0., 1.0f32 ],
                         ]
@@ -85,13 +85,14 @@ impl Renderer{
 
                     let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
 
+                    let (x1, y1, x2, y2) = position.coords();
                     let shape = vec![
-                        Vertex { position: [ -1., -1. ] },
-                        Vertex { position: [  1.,  1. ] },
-                        Vertex { position: [ -1.,  1. ] },
-                        Vertex { position: [ -1., -1. ] },
-                        Vertex { position: [  1.,  1. ] },
-                        Vertex { position: [  1., -1. ] },
+                        Vertex { position: [ x1, y1 ] },
+                        Vertex { position: [ x2, y2 ] },
+                        Vertex { position: [ x1, y2 ] },
+                        Vertex { position: [ x1, y1 ] },
+                        Vertex { position: [ x2, y2 ] },
+                        Vertex { position: [ x2, y1 ] },
                     ];
 
                     let vertex_buffer = glium::VertexBuffer::new(&self.display, &shape).unwrap();

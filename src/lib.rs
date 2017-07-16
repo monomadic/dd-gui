@@ -23,6 +23,17 @@ pub struct Rect {
     pub height: f32,
 }
 
+impl Rect {
+    pub fn coords(&self) -> (f32, f32, f32, f32) {
+        (
+            self.origin.x,                  // x1
+            self.origin.y,                  // y1
+            self.origin.x + self.width,     // x2
+            self.origin.y + self.height,    // y2
+        )
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct Point {
     pub x: f32,

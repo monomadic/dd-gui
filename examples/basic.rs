@@ -44,10 +44,13 @@ fn main() {
                 }
             }
 
-            Triangle::new(Rect{ origin: Point{ x:-100.0, y:100.0 }, width:10.0, height:100.0 })
+            Triangle::new(Rect{ origin: Point{ x:100.0, y:100.0 }, width:10.0, height:100.0 })
                 .set(&mut renderer);
 
             Triangle::new(Rect{ origin: Point{ x:10.0, y:10.0 }, width:50.0, height:40.0 })
+                .set(&mut renderer);
+
+            Triangle::new(Rect{ origin: Point{ x:0.0, y:0.0 }, width:0.5, height:0.5 })
                 .set(&mut renderer);
 
             renderer.render();
