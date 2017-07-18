@@ -33,7 +33,7 @@ struct Vertex {
 
 implement_vertex!(Vertex, position);
 
-impl Renderer{
+impl Renderer {
     pub fn new(display: glium::Display) -> Renderer {
         let triangle_program = program_from_shader(&display,
                                                    include_str!("shaders/polygon.vert"),
@@ -60,10 +60,15 @@ impl Renderer{
 
     pub fn render(&mut self) {
         let mut target = self.display.draw();
-        target.clear_color(0.1, 0.1, 0.1, 1.0);
+        target.clear_color(0.005, 0.005, 0.005, 1.0);
 
         let (view_width, view_height) = self.get_inner_size_points();
         let projection: [[f32; 4]; 4] = cgmath::ortho(0.0, view_width, 0.0, view_height, -1.0, 1.0).into();
+
+        let draw_params = glium::DrawParameters {
+            blend: glium::Blend::alpha_blending(),
+            .. Default::default()
+        };
 
         for instruction in self.instructions.clone() {
             match instruction {
@@ -74,7 +79,6 @@ impl Renderer{
                         ortho_projection: projection,
                         u_resolution: [view_width, view_height],
                         u_color: color.as_f32(),
-//                        u_midpoint: [(x1 + x2) / 2., (y1 + y2) / 2.],
                         u_position: [(x1 + x2), (y1 + y2)],
                         u_radius: position.width / 2.,
                     };
@@ -97,7 +101,7 @@ impl Renderer{
                         &indices,
                         &self.circle_program,
                         &uniforms,
-                        &Default::default()).unwrap();
+                        &draw_params).unwrap();
                 },
                 RenderElement::Triangle(position, color) => {
 
@@ -138,7 +142,7 @@ impl Renderer{
                         &indices,
                         &self.triangle_program,
                         &uniforms,
-                        &Default::default()).unwrap();
+                        &draw_params).unwrap();
 
                 }
             }

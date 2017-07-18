@@ -6,6 +6,7 @@ uniform vec2  u_position;
 uniform vec2  u_midpoint;
 uniform float u_radius;
 
+//in vec4 v_color;
 out vec4 color;
 
 float smoothFloat(float r, float R) {
@@ -35,9 +36,13 @@ void main() {
     finalColor += lineColor * lineAlpha;
 
     // fill
-    vec3 fillColor = vec3(0.4, 0.4, 0.9);
+    vec4 fillColor = u_color;
     float fillAlpha = (1.0 - lineAlpha) * circleFill(uv, c, u_radius);
-    finalColor += fillColor * fillAlpha;
+    finalColor += fillColor.rgb * fillAlpha;
 
-    color = vec4(finalColor, 1.0);
+    if((fillAlpha + lineAlpha) == 0.) discard;
+
+//    glBlendFunc(finalColor, v_color);
+
+    color = vec4(finalColor, (fillAlpha + lineAlpha));
 }

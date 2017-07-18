@@ -57,7 +57,7 @@ fn main() {
                 .color(color::GREEN)
                 .set(&mut renderer);
 
-            Knob::new(Rect{ origin: Point{ x:150.0, y:190.0 }, width:40.0, height:30.0 })
+            Knob::new(Rect{ origin: Point{ x:150.0, y:190.0 }, width:400.0, height:400.0 })
                 .color(color::PINK)
                 .set(&mut renderer);
 
