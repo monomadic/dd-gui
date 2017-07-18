@@ -5,14 +5,14 @@ use Rect;
 use color;
 use color::Color;
 
-pub struct Triangle {
+pub struct Knob {
     position: Rect,
     color: Color,
 }
 
-impl Triangle {
-    pub fn new(rect: Rect) -> Triangle {
-        Triangle {
+impl Knob {
+    pub fn new(rect: Rect) -> Knob {
+        Knob {
             position: rect,
             color: color::RED,
         }

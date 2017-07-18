@@ -1,9 +1,10 @@
 use glium::Frame;
 use glium::backend::glutin_backend::GlutinFacade;
 
-//mod knob;
+mod knob;
+pub use self::knob::Knob;
+
 mod triangle;
-//pub use self::knob::*;
 pub use self::triangle::Triangle;
 
 pub trait Widget {
