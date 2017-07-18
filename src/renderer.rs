@@ -12,12 +12,11 @@ use widgets::*;
 
 use Rect;
 use color::Color;
-//use Point;
-//use { Matrix2, Matrix3, Matrix4 };
 
 #[derive(Clone)]
 pub enum RenderElement {
-    Triangle(Rect, Color)
+    Triangle(Rect, Color),
+    Circle(Rect, Color),
 }
 
 pub struct Renderer {
@@ -63,24 +62,52 @@ impl Renderer{
 
         for instruction in self.instructions.clone() {
             match instruction {
+                RenderElement::Circle(position, color) => {
+                    let uniforms = uniform! {
+                        ortho_projection: projection,
+                        u_resolution: [view_width, view_height],
+                        u_color: color.as_f32(),
+                    };
+                    let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
+                    let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
+
+                    let (x1, y1, x2, y2) = position.coords();
+                    let shape = vec![
+                        Vertex { position: [ x1, y1 ] },
+                        Vertex { position: [ x2, y2 ] },
+                        Vertex { position: [ x1, y2 ] },
+                        Vertex { position: [ x1, y1 ] },
+                        Vertex { position: [ x2, y2 ] },
+                        Vertex { position: [ x2, y1 ] },
+                    ];
+
+                    let vertex_buffer = glium::VertexBuffer::new(&self.display, &shape).unwrap();
+
+                    target.draw(
+                        &vertex_buffer,
+                        &indices,
+                        &self.triangle_program,
+                        &uniforms,
+                        &Default::default()).unwrap();
+                },
                 RenderElement::Triangle(position, color) => {
 
                     let uniforms = uniform! {
                         ortho_projection: projection,
                         u_resolution: [view_width, view_height],
                         u_color: color.as_f32(),
-                        scale_matrix: [
-                            [ (position.width / view_width), 0., 0., 0. ], // x
-                            [ 0., (position.height / view_height), 0., 0. ], // y
-                            [ 0., 0., 1., 0. ], // z
-                            [ 0., 0., 0., 1.0f32 ],
-                        ],
-                        offset_matrix: [
-                            [ 1., 0., 0., (view_width / 2.0) + position.origin.x ], // x
-                            [ 0., 1., 0., (view_height / 2.0) + position.origin.y ], // y
-                            [ 0., 0., 1., 1. ], // z
-                            [ 0., 0., 0., 1.0f32 ],
-                        ]
+//                        scale_matrix: [
+//                            [ (position.width / view_width), 0., 0., 0. ], // x
+//                            [ 0., (position.height / view_height), 0., 0. ], // y
+//                            [ 0., 0., 1., 0. ], // z
+//                            [ 0., 0., 0., 1.0f32 ],
+//                        ],
+//                        offset_matrix: [
+//                            [ 1., 0., 0., (view_width / 2.0) + position.origin.x ], // x
+//                            [ 0., 1., 0., (view_height / 2.0) + position.origin.y ], // y
+//                            [ 0., 0., 1., 1. ], // z
+//                            [ 0., 0., 0., 1.0f32 ],
+//                        ]
                     };
 
                     let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
