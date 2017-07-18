@@ -53,10 +53,11 @@ fn main() {
             Triangle::new(Rect{ origin: Point{ x:10.0, y:10.0 }, width:50.0, height:40.0 })
                 .set(&mut renderer);
 
-//            Triangle::new(Rect{ origin: Point{ x:0.0, y:0.0 }, width:0.5, height:0.5 })
-//                .set(&mut renderer);
+            Knob::new(Rect{ origin: Point{ x:20.0, y:20.0 }, width:80.0, height:50.0 })
+                .color(color::GREEN)
+                .set(&mut renderer);
 
-            Knob::new(Rect{ origin: Point{ x:20.0, y:10.0 }, width:50.0, height:40.0 })
+            Knob::new(Rect{ origin: Point{ x:150.0, y:190.0 }, width:40.0, height:30.0 })
                 .color(color::PINK)
                 .set(&mut renderer);
 

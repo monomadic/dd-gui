@@ -1,14 +1,14 @@
 //use std::io;
-use std::path::{PathBuf, Path};
-use std::fs::File;
-use std::io::Read;
+//use std::path::{PathBuf, Path};
+//use std::fs::File;
+//use std::io::Read;
 
 use cgmath;
 
 use glium;
 use glium::Surface;
-use glium::uniforms::*;
-use widgets::*;
+//use glium::uniforms::*;
+//use widgets::*;
 
 use Rect;
 use color::Color;
@@ -22,6 +22,7 @@ pub enum RenderElement {
 pub struct Renderer {
     pub display: glium::Display,
     pub triangle_program: glium::Program,
+    pub circle_program: glium::Program,
     pub instructions: Vec<RenderElement>,
 }
 
@@ -37,11 +38,15 @@ impl Renderer{
         let triangle_program = program_from_shader(&display,
                                                    include_str!("shaders/polygon.vert"),
                                                    include_str!("shaders/polygon.frag"));
-        let points = display.get_window().unwrap().get_inner_size_points().unwrap();
+
+        let circle_program = program_from_shader(&display,
+                                                   include_str!("shaders/polygon.vert"),
+                                                   include_str!("shaders/circle.frag"));
         Renderer {
             display: display,
             instructions: Vec::new(),
             triangle_program: triangle_program,
+            circle_program: circle_program,
         }
     }
 
@@ -63,15 +68,19 @@ impl Renderer{
         for instruction in self.instructions.clone() {
             match instruction {
                 RenderElement::Circle(position, color) => {
+                    let (x1, y1, x2, y2) = position.coords();
+
                     let uniforms = uniform! {
                         ortho_projection: projection,
                         u_resolution: [view_width, view_height],
                         u_color: color.as_f32(),
+//                        u_midpoint: [(x1 + x2) / 2., (y1 + y2) / 2.],
+                        u_position: [(x1 + x2), (y1 + y2)],
+                        u_radius: position.width / 2.,
                     };
-                    let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
+
                     let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
 
-                    let (x1, y1, x2, y2) = position.coords();
                     let shape = vec![
                         Vertex { position: [ x1, y1 ] },
                         Vertex { position: [ x2, y2 ] },
@@ -86,7 +95,7 @@ impl Renderer{
                     target.draw(
                         &vertex_buffer,
                         &indices,
-                        &self.triangle_program,
+                        &self.circle_program,
                         &uniforms,
                         &Default::default()).unwrap();
                 },

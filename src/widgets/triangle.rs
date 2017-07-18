@@ -22,7 +22,7 @@ impl Triangle {
 
     pub fn set(&self, renderer: &mut Renderer) {
         renderer.instructions.push(
-            RenderElement::Circle(self.position.clone(), self.color)
+            RenderElement::Triangle(self.position.clone(), self.color)
         );
     }
 }
