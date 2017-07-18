@@ -27,8 +27,8 @@ void main() {
 	vec3 finalColor = vec3(0.0);
     vec2 uv = gl_FragCoord.xy;
     float borderWidth = 3.;
-//    float padding = (borderWidth * 2.); // account for border so image doesn't chop off.
     vec2 c = u_position.xy;
+//    float padding = (borderWidth * 2.); // account for border so image doesn't chop off.
 
     // line
     vec3 lineColor = vec3(0.3, 0.9, 0.9);
@@ -40,9 +40,9 @@ void main() {
     float fillAlpha = (1.0 - lineAlpha) * circleFill(uv, c, u_radius);
     finalColor += fillColor.rgb * fillAlpha;
 
+    // discard transparent pixel draws
     if((fillAlpha + lineAlpha) == 0.) discard;
 
-//    glBlendFunc(finalColor, v_color);
-
+    // blend final color
     color = vec4(finalColor, (fillAlpha + lineAlpha));
 }
