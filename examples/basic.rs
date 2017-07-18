@@ -7,6 +7,8 @@ use dd_gui::glium::{ DisplayBuild };
 use dd_gui::{ Point, Rect };
 use dd_gui::widgets::{ Triangle };
 
+use dd_gui::color;
+
 fn main() {
     let wb = winit::WindowBuilder::new()
         .with_dimensions(640, 480)
@@ -45,6 +47,7 @@ fn main() {
             }
 
             Triangle::new(Rect{ origin: Point{ x:100.0, y:100.0 }, width:10.0, height:100.0 })
+                .color(color::GREEN)
                 .set(&mut renderer);
 
             Triangle::new(Rect{ origin: Point{ x:10.0, y:10.0 }, width:50.0, height:40.0 })

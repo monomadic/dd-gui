@@ -11,12 +11,13 @@ use glium::uniforms::*;
 use widgets::*;
 
 use Rect;
+use color::Color;
 //use Point;
 //use { Matrix2, Matrix3, Matrix4 };
 
 #[derive(Clone)]
 pub enum RenderElement {
-    Triangle(Rect)
+    Triangle(Rect, Color)
 }
 
 pub struct Renderer {
@@ -53,8 +54,6 @@ impl Renderer{
         (points.0 as f32, points.1 as f32)
     }
 
-
-
     pub fn render(&mut self) {
         let mut target = self.display.draw();
         target.clear_color(0.1, 0.1, 0.1, 1.0);
@@ -64,11 +63,12 @@ impl Renderer{
 
         for instruction in self.instructions.clone() {
             match instruction {
-                RenderElement::Triangle(position) => {
+                RenderElement::Triangle(position, color) => {
 
                     let uniforms = uniform! {
                         ortho_projection: projection,
                         u_resolution: [view_width, view_height],
+                        u_color: color.as_f32(),
                         scale_matrix: [
                             [ (position.width / view_width), 0., 0., 0. ], // x
                             [ 0., (position.height / view_height), 0., 0. ], // y

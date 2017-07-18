@@ -15,6 +15,7 @@ mod renderer;
 pub use renderer::Renderer;
 
 pub mod widgets;
+pub mod color;
 
 #[derive(Clone, Debug)]
 pub struct Rect {
