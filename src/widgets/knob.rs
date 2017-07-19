@@ -5,11 +5,14 @@ use Rect;
 use color;
 use color::Color;
 use Ui;
-use ui::MouseButton;
+use ui::{ MouseButton, WidgetState };
+
+use glutin;
 
 pub struct Knob {
-    position: Rect,
-    color: Color,
+    position:   Rect,
+    color:      Color,
+    state:      WidgetState,
 }
 
 impl Knob {
@@ -17,6 +20,7 @@ impl Knob {
         Knob {
             position: rect,
             color: color::RED,
+            state: WidgetState{ hovered: false, hot: false, activated: false },
         }
     }
 
@@ -29,11 +33,26 @@ impl Knob {
         self
     }
 
-    pub fn handle(mut self, ui: &mut Ui) -> Self {
+    pub fn handle(mut self, events: &[glutin::Event], ui: &mut Ui) -> Self {
+        for event in events {
+            match event {
+                &glutin::Event::MouseInput(glutin::ElementState::Pressed, glutin::MouseButton::Left) => {
+                    self.state.hot = true;
+                    if ui.mouse_inside_rect(self.position.clone()) {
+                        println!("click!");
+                    }
+                }
+                &glutin::Event::MouseInput(glutin::ElementState::Released, glutin::MouseButton::Left) => {
+                    self.state.activated = true;
+                }
+                _ => ()
+            }
+        }
+
         self
     }
 
-    pub fn clicked(self, ui: Ui) -> bool {
-        ui.mouse_inside_rect(self.position) && ui.mouse.state == MouseButton::Down
+    pub fn mouse_up(self) -> bool {
+        self.state.activated
     }
 }

@@ -22,26 +22,30 @@ fn main() {
         .unwrap();
 
     let mut renderer = dd_gui::Renderer::new(display);
-    let mut ui = dd_gui::Ui::new(renderer.get_inner_size_points());
+    let mut ui = dd_gui::Ui::new(&mut renderer);
 
     let mut last_update = std::time::Instant::now();
     'main: loop {
         let now = std::time::Instant::now();
         let duration_since_last_update = now.duration_since(last_update);
 
-        let sixteen_ms = std::time::Duration::from_millis(50);
+        let sixteen_ms = std::time::Duration::from_millis(10);
 
         if duration_since_last_update < sixteen_ms {
             std::thread::sleep(sixteen_ms - duration_since_last_update)
         } else {
-            for event in renderer.display.poll_events() {
-                match event {
-                    glutin::Event::Closed => break 'main,
-                    glutin::Event::KeyboardInput(glutin::ElementState::Pressed, _, Some(glutin::VirtualKeyCode::Escape)) => break 'main,
-                    _ => ()
-                }
-                ui.handle_glutin_event(event);
-            }
+
+            let events: Vec<glutin::Event> = renderer.display.poll_events().collect();
+//            for event in renderer.display.poll_events() {
+//                match event {
+//                    glutin::Event::Closed => break 'main,
+//                    glutin::Event::KeyboardInput(glutin::ElementState::Pressed, _, Some(glutin::VirtualKeyCode::Escape)) => break 'main,
+//                    _ => ()
+//                }
+//                ui.handle_glutin_event(event);
+//            }
+
+            ui.handle_events(&events);
 
             Triangle::new(Rect{ origin: Point::new(100.,100.), size: Point::new(10.,100.) })
                 .color(color::GREEN)
@@ -52,15 +56,14 @@ fn main() {
 
             Knob::new(Rect{ origin: Point::new(20.,20.), size: Point::new(80.,50.) })
                 .color(color::rgba(255, 200, 100, 150))
-                .handle(&mut ui)
                 .draw(&mut renderer);
 
             if Knob::new(Rect{ origin: Point::new(150.,190.), size: Point::new(400.,400.) })
                 .color(color::PINK)
-                .handle(&mut ui)
+                .handle(&events, &mut ui)
                 .draw(&mut renderer)
-                .clicked(ui.clone()) {
-                    println!("gurrrrp!");
+                .mouse_up() {
+                    println!("clicked!");
             };
 
             renderer.render();
