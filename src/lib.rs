@@ -20,8 +20,7 @@ pub mod color;
 #[derive(Clone, Debug)]
 pub struct Rect {
     pub origin: Point,
-    pub width: f32,
-    pub height: f32,
+    pub size: Point,
 }
 
 impl Rect {
@@ -29,8 +28,8 @@ impl Rect {
         (
             self.origin.x,                  // x1
             self.origin.y,                  // y1
-            self.origin.x + self.width,     // x2
-            self.origin.y + self.height,    // y2
+            self.origin.x + self.size.w(),  // x2
+            self.origin.y + self.size.h(),  // y2
         )
     }
 }
@@ -39,4 +38,12 @@ impl Rect {
 pub struct Point {
     pub x: f32,
     pub y: f32,
+}
+
+impl Point {
+    pub fn new(x: f32, y: f32) -> Self { Self{ x:x, y:y }}
+    pub fn xy(&self) -> (f32, f32) { (self.x, self.y) }
+    pub fn wh(&self) -> (f32, f32) { (self.x, self.y) }
+    pub fn w(&self) -> f32 { self.x }
+    pub fn h(&self) -> f32 { self.y }
 }

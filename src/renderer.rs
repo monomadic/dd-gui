@@ -80,7 +80,7 @@ impl Renderer {
                         u_resolution: [view_width, view_height],
                         u_color: color.as_f32(),
                         u_position: [(x1 + x2), (y1 + y2)],
-                        u_radius: position.width / 2.,
+                        u_radius: position.size.w() / 2.,
                     };
 
                     let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
