@@ -73,25 +73,25 @@ impl Renderer {
         for instruction in self.instructions.clone() {
             match instruction {
                 RenderElement::Circle(position, color) => {
-                    let (x1, y1, x2, y2) = position.coords();
+                    let (min, max) = position.coords();
 
                     let uniforms = uniform! {
                         ortho_projection: projection,
                         u_resolution: [view_width, view_height],
                         u_color: color.as_f32(),
-                        u_position: [(x1 + x2), (y1 + y2)],
+                        u_position: [(min.x + max.x), (min.y + max.y)],
                         u_radius: position.size.w() / 2.,
                     };
 
                     let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
 
                     let shape = vec![
-                        Vertex { position: [ x1, y1 ] },
-                        Vertex { position: [ x2, y2 ] },
-                        Vertex { position: [ x1, y2 ] },
-                        Vertex { position: [ x1, y1 ] },
-                        Vertex { position: [ x2, y2 ] },
-                        Vertex { position: [ x2, y1 ] },
+                        Vertex { position: [ min.x, min.y ] },
+                        Vertex { position: [ max.x, max.y ] },
+                        Vertex { position: [ min.x, max.y ] },
+                        Vertex { position: [ min.x, min.y ] },
+                        Vertex { position: [ max.x, max.y ] },
+                        Vertex { position: [ max.x, min.y ] },
                     ];
 
                     let vertex_buffer = glium::VertexBuffer::new(&self.display, &shape).unwrap();
@@ -125,14 +125,14 @@ impl Renderer {
 
                     let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
 
-                    let (x1, y1, x2, y2) = position.coords();
+                    let (min, max) = position.coords();
                     let shape = vec![
-                        Vertex { position: [ x1, y1 ] },
-                        Vertex { position: [ x2, y2 ] },
-                        Vertex { position: [ x1, y2 ] },
-                        Vertex { position: [ x1, y1 ] },
-                        Vertex { position: [ x2, y2 ] },
-                        Vertex { position: [ x2, y1 ] },
+                        Vertex { position: [ min.x, min.y ] },
+                        Vertex { position: [ max.x, max.y ] },
+                        Vertex { position: [ min.x, max.y ] },
+                        Vertex { position: [ min.x, min.y ] },
+                        Vertex { position: [ max.x, max.y ] },
+                        Vertex { position: [ max.x, min.y ] },
                     ];
 
                     let vertex_buffer = glium::VertexBuffer::new(&self.display, &shape).unwrap();

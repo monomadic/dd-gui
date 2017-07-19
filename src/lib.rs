@@ -16,6 +16,8 @@ pub use renderer::Renderer;
 
 pub mod widgets;
 pub mod color;
+pub mod ui;
+pub use ui::Ui;
 
 #[derive(Clone, Debug)]
 pub struct Rect {
@@ -24,17 +26,15 @@ pub struct Rect {
 }
 
 impl Rect {
-    pub fn coords(&self) -> (f32, f32, f32, f32) {
+    pub fn coords(&self) -> (Point, Point) {
         (
-            self.origin.x,                  // x1
-            self.origin.y,                  // y1
-            self.origin.x + self.size.w(),  // x2
-            self.origin.y + self.size.h(),  // y2
+            Point{ x:self.origin.x, y:self.origin.y },
+            Point{ x:(self.origin.x + self.size.w()), y:(self.origin.y + self.size.h()) }
         )
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Copy)]
 pub struct Point {
     pub x: f32,
     pub y: f32,

@@ -4,6 +4,8 @@ use Renderer;
 use Rect;
 use color;
 use color::Color;
+use Ui;
+use ui::MouseButton;
 
 pub struct Knob {
     position: Rect,
@@ -20,9 +22,18 @@ impl Knob {
 
     pub fn color(mut self, color: Color) -> Self { self.color = color; self }
 
-    pub fn set(&self, renderer: &mut Renderer) {
+    pub fn draw(mut self, renderer: &mut Renderer) -> Self {
         renderer.instructions.push(
             RenderElement::Circle(self.position.clone(), self.color)
         );
+        self
+    }
+
+    pub fn handle(mut self, ui: &mut Ui) -> Self {
+        self
+    }
+
+    pub fn clicked(self, ui: Ui) -> bool {
+        ui.mouse_inside_rect(self.position) && ui.mouse.state == MouseButton::Down
     }
 }
