@@ -47,20 +47,12 @@ impl Ui {
     }
 
     pub fn mouse_inside_rect(self, rect: Rect) -> bool {
-//        println!("{:?} {:?}", self.mouse.position, rect);
         let (x, y) = (
             (self.mouse.position.x / 2.),
-            (self.size.1 - (self.mouse.position.y / 2.))
-        );
-        println!("{:?}", (x, y, rect.clone()));
+            (self.size.1 - (self.mouse.position.y / 2.)));
         let (min, max) = rect.coords();
 
-        if  x > min.x && y > min.y &&
-            x < max.x && y < max.y {
-            println!("hit");
-            return true
-        } else {
-            return false
-        }
+        (x > min.x && y > min.y &&
+            x < max.x && y < max.y)
     }
 }
