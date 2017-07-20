@@ -4,12 +4,26 @@ use Rect;
 use Renderer;
 
 /// Ui:
-/// Tracks the ui's global state across frames. As widgets do not track state across frames we
-/// need a way of keeping track of multi-frame info eg. drags, mouse position.
+/// Tracks the ui's global state across frames. As widgets do not keep state across frames we
+/// need a way of keeping track of multi-frame info eg. the mouses state, dragging, etc.
 #[derive(Clone, Debug)]
 pub struct Ui {
-    pub mouse:  MouseState,
-    size:       (f32, f32),
+    pub mouse:              MouseState,
+    size:                   (f32, f32),
+    pub focused_widget:     Option<FocusedWidget>,
+}
+
+// todo: add time ago for state change. for tweens and animations.
+#[derive(Clone, Debug)]
+pub struct FocusedWidget {
+    id: String,
+    state: FocusedWidgetState,
+}
+
+#[derive(Clone, Debug)]
+pub enum FocusedWidgetState {
+    Hovered,
+    Pressed,
 }
 
 /// WidgetState:
@@ -29,7 +43,6 @@ pub struct MouseState {
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum MouseButton {
-    Idle,
     Down,
     Up,
 }
@@ -38,9 +51,32 @@ impl Ui {
     pub fn new(renderer: &mut Renderer) -> Self {
         let size = renderer.get_inner_size_points();
         Self {
-            mouse: MouseState { position: Point{ x:0., y:0. }, state: MouseButton::Idle },
+            mouse: MouseState { position: Point{ x:0., y:0. }, state: MouseButton::Up },
             size: size,
+            focused_widget: None,
         }
+    }
+
+    pub fn set_hovered(&mut self, id: String) {
+        self.focused_widget = Some(
+            FocusedWidget {
+                id: id,
+                state: FocusedWidgetState::Hovered,
+            }
+        );
+    }
+
+    pub fn set_pressed(&mut self, id: String) {
+        self.focused_widget = Some(
+            FocusedWidget {
+                id: id,
+                state: FocusedWidgetState::Pressed,
+            }
+        );
+    }
+
+    pub fn clear_focus(&mut self) {
+        self.focused_widget = None;
     }
 
 //    pub fn handle_glutin_events(mut self, renderer: Renderer) -> Self {
@@ -50,10 +86,6 @@ impl Ui {
 
     pub fn handle_events(&mut self, events: &[glutin::Event]) {
         for event in events {
-            if self.mouse.state == MouseButton::Up {
-                self.mouse.state = MouseButton::Idle;
-            }
-
             match event {
                 &glutin::Event::MouseInput(glutin::ElementState::Pressed, glutin::MouseButton::Left) => {
                     self.mouse.state = MouseButton::Down;
@@ -68,7 +100,7 @@ impl Ui {
                 }
 
                 _ => {
-                    self.mouse.state = MouseButton::Idle;
+                    self.mouse.state = MouseButton::Up;
                 }
             }
         }

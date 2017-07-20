@@ -54,17 +54,16 @@ fn main() {
             Triangle::new(Rect{ origin: Point::new(10.,10.), size: Point::new(50.,40.) })
                 .set(&mut renderer);
 
-            Knob::new(Rect{ origin: Point::new(20.,20.), size: Point::new(80.,50.) })
+            if Knob::new(Rect{ origin: Point::new(20.,20.), size: Point::new(80.,50.) })
                 .color(color::rgba(255, 200, 100, 150))
-                .draw(&mut renderer);
+                .draw(&mut renderer)
+                .changed() { println!("default circle!") };
 
             if Knob::new(Rect{ origin: Point::new(150.,190.), size: Point::new(400.,400.) })
                 .color(color::PINK)
-                .handle(&events, &mut ui)
+                .handle(&events, &mut ui, "pink circle".to_string())
                 .draw(&mut renderer)
-                .mouse_up() {
-                    println!("clicked!");
-            };
+                .changed() { println!("pink circle!"); };
 
             renderer.render();
 

@@ -5,14 +5,20 @@ use Rect;
 use color;
 use color::Color;
 use Ui;
-use ui::{ MouseButton, WidgetState };
+use ui::{ MouseButton, WidgetState, FocusedWidget, FocusedWidgetState };
 
 use glutin;
 
 pub struct Knob {
     position:   Rect,
     color:      Color,
-    state:      WidgetState,
+    state:      KnobState,
+}
+
+pub enum KnobState {
+    Idle,
+    Hovered,
+    Turning,
 }
 
 impl Knob {
@@ -20,7 +26,7 @@ impl Knob {
         Knob {
             position: rect,
             color: color::RED,
-            state: WidgetState{ hovered: false, hot: false, activated: false },
+            state: KnobState::Idle,
         }
     }
 
@@ -33,17 +39,22 @@ impl Knob {
         self
     }
 
-    pub fn handle(mut self, events: &[glutin::Event], ui: &mut Ui) -> Self {
+    pub fn handle(mut self, events: &[glutin::Event], ui: &mut Ui, id: String) -> Self {
+        let mouse_inside = ui.mouse_inside_rect(self.position.clone());
+
         for event in events {
             match event {
                 &glutin::Event::MouseInput(glutin::ElementState::Pressed, glutin::MouseButton::Left) => {
-                    self.state.hot = true;
-                    if ui.mouse_inside_rect(self.position.clone()) {
-                        println!("click!");
+                    if mouse_inside {
+                        ui.set_pressed(id.clone());
+                        self.state = KnobState::Turning;
+                        println!("knob widget is turning");
                     }
                 }
                 &glutin::Event::MouseInput(glutin::ElementState::Released, glutin::MouseButton::Left) => {
-                    self.state.activated = true;
+                    ui.clear_focus();
+                    self.state = KnobState::Idle;
+                    println!("knob widget stopped turning");
                 }
                 _ => ()
             }
@@ -52,7 +63,7 @@ impl Knob {
         self
     }
 
-    pub fn mouse_up(self) -> bool {
-        self.state.activated
+    pub fn changed(self) -> bool {
+        false
     }
 }
