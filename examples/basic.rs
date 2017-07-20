@@ -29,11 +29,13 @@ fn main() {
         let now = std::time::Instant::now();
         let duration_since_last_update = now.duration_since(last_update);
 
-        let sixteen_ms = std::time::Duration::from_millis(10);
+        let sixteen_ms = std::time::Duration::from_millis(16);
 
         if duration_since_last_update < sixteen_ms {
             std::thread::sleep(sixteen_ms - duration_since_last_update)
         } else {
+            // Display FPS:
+//            println!("FPS: {}", 1_000_000_000 / duration_since_last_update.subsec_nanos());
 
             let events: Vec<glutin::Event> = renderer.display.poll_events().collect();
             ui.handle_events(&events);
