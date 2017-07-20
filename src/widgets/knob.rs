@@ -32,7 +32,7 @@ impl Knob {
 
     pub fn color(mut self, color: Color) -> Self { self.color = color; self }
 
-    pub fn draw(mut self, renderer: &mut Renderer) -> Self {
+    pub fn draw(self, renderer: &mut Renderer) -> Self {
         renderer.instructions.push(
             RenderElement::Circle(self.position.clone(), self.color)
         );
@@ -45,7 +45,6 @@ impl Knob {
 
         if mouse_inside && !ui.is_locked() {
             ui.set_hovered(id.clone());
-//            println!("hovered");
         };
 
         for event in events {

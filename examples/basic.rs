@@ -5,7 +5,7 @@ use dd_gui::glutin;
 use dd_gui::glium::{ DisplayBuild };
 
 use dd_gui::{ Point, Rect, Ui };
-use dd_gui::widgets::{Button, Knob };
+use dd_gui::widgets::{ Button, Knob };
 
 use dd_gui::color;
 
@@ -17,7 +17,7 @@ fn main() {
 
     let display = glutin::WindowBuilder::from_winit_builder(wb)
         .with_decorations(true)
-//         .with_vsync()
+        .with_vsync()
         .build_glium()
         .unwrap();
 
@@ -36,34 +36,27 @@ fn main() {
         } else {
 
             let events: Vec<glutin::Event> = renderer.display.poll_events().collect();
-//            for event in renderer.display.poll_events() {
-//                match event {
-//                    glutin::Event::Closed => break 'main,
-//                    glutin::Event::KeyboardInput(glutin::ElementState::Pressed, _, Some(glutin::VirtualKeyCode::Escape)) => break 'main,
-//                    _ => ()
-//                }
-//                ui.handle_glutin_event(event);
-//            }
-
             ui.handle_events(&events);
 
             Button::new(Rect{ origin: Point::new(100., 100.), size: Point::new(10., 100.) })
                 .color(color::GREEN)
-                .set(&mut renderer);
+                .handle(&events, &mut ui, "green button".to_string())
+                .draw(&mut renderer);
 
             Button::new(Rect{ origin: Point::new(10., 10.), size: Point::new(50., 40.) })
-                .set(&mut renderer);
+                .draw(&mut renderer);
 
             if Knob::new(Rect{ origin: Point::new(20.,20.), size: Point::new(80.,50.) })
                 .color(color::rgba(255, 200, 100, 150))
+                .handle(&events, &mut ui, "default knob".to_string())
                 .draw(&mut renderer)
-                .changed() { println!("default circle!") };
+                .changed() { println!("default knob!") };
 
-            if Knob::new(Rect{ origin: Point::new(150.,190.), size: Point::new(400.,400.) })
-                .color(color::PINK)
-                .handle(&events, &mut ui, "pink circle".to_string())
-                .draw(&mut renderer)
-                .changed() { println!("pink circle!"); };
+//            if Knob::new(Rect{ origin: Point::new(150.,190.), size: Point::new(400.,400.) })
+//                .color(color::PINK)
+//                .handle(&events, &mut ui, "pink circle".to_string())
+//                .draw(&mut renderer)
+//                .changed() { println!("pink circle!"); };
 
             renderer.render();
 
