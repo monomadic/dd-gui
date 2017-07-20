@@ -5,7 +5,7 @@ use dd_gui::glutin;
 use dd_gui::glium::{ DisplayBuild };
 
 use dd_gui::{ Point, Rect, Ui };
-use dd_gui::widgets::{ Triangle, Knob };
+use dd_gui::widgets::{Button, Knob };
 
 use dd_gui::color;
 
@@ -47,11 +47,11 @@ fn main() {
 
             ui.handle_events(&events);
 
-            Triangle::new(Rect{ origin: Point::new(100.,100.), size: Point::new(10.,100.) })
+            Button::new(Rect{ origin: Point::new(100., 100.), size: Point::new(10., 100.) })
                 .color(color::GREEN)
                 .set(&mut renderer);
 
-            Triangle::new(Rect{ origin: Point::new(10.,10.), size: Point::new(50.,40.) })
+            Button::new(Rect{ origin: Point::new(10., 10.), size: Point::new(50., 40.) })
                 .set(&mut renderer);
 
             if Knob::new(Rect{ origin: Point::new(20.,20.), size: Point::new(80.,50.) })

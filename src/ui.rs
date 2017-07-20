@@ -20,7 +20,7 @@ pub struct FocusedWidget {
     state: FocusedWidgetState,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum FocusedWidgetState {
     Hovered,
     Pressed,
@@ -79,10 +79,20 @@ impl Ui {
         self.focused_widget = None;
     }
 
-//    pub fn handle_glutin_events(mut self, renderer: Renderer) -> Self {
-//        let events: Vec<glutin::Event> = renderer.display.poll_events().collect();
-//        self
-//    }
+    pub fn is_focused(&self, id: String) -> bool {
+        match self.focused_widget {
+            Some(ref w) => { w.id == id }
+            None => { false }
+        }
+    }
+
+    // a widget has control and has locked the focus. can be forcibly broken of course.
+    pub fn is_locked(&self) -> bool {
+        match self.focused_widget {
+            Some(ref w) => { w.state == FocusedWidgetState::Pressed }
+            None => { false }
+        }
+    }
 
     pub fn handle_events(&mut self, events: &[glutin::Event]) {
         for event in events {

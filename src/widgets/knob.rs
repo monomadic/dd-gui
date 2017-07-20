@@ -41,6 +41,12 @@ impl Knob {
 
     pub fn handle(mut self, events: &[glutin::Event], ui: &mut Ui, id: String) -> Self {
         let mouse_inside = ui.mouse_inside_rect(self.position.clone());
+        let is_focus = ui.is_focused(id.clone());
+
+        if mouse_inside && !ui.is_locked() {
+            ui.set_hovered(id.clone());
+//            println!("hovered");
+        };
 
         for event in events {
             match event {
@@ -52,9 +58,11 @@ impl Knob {
                     }
                 }
                 &glutin::Event::MouseInput(glutin::ElementState::Released, glutin::MouseButton::Left) => {
-                    ui.clear_focus();
-                    self.state = KnobState::Idle;
-                    println!("knob widget stopped turning");
+                    if is_focus {
+                        ui.clear_focus();
+                        self.state = KnobState::Idle; // we still need to care about this because we're processing a batch of events.
+                        println!("knob widget stopped turning");
+                    }
                 }
                 _ => ()
             }
