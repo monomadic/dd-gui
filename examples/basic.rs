@@ -4,16 +4,14 @@ use dd_gui::winit;
 use dd_gui::glutin;
 use dd_gui::glium::{ DisplayBuild };
 
-use dd_gui::{ Point, Rect, Ui };
+use dd_gui::{ Point, Rect };
 use dd_gui::widgets::{ Button, Knob };
-
 use dd_gui::color;
 
 fn main() {
     let wb = winit::WindowBuilder::new()
-        .with_dimensions(640, 480)
+        .with_dimensions(640,480)
         .with_transparency(false);
-
 
     let display = glutin::WindowBuilder::from_winit_builder(wb)
         .with_decorations(true)
@@ -35,7 +33,7 @@ fn main() {
             std::thread::sleep(sixteen_ms - duration_since_last_update)
         } else {
             // Display FPS:
-//            println!("FPS: {}", 1_000_000_000 / duration_since_last_update.subsec_nanos());
+            // println!("FPS: {}", 1_000_000_000 / duration_since_last_update.subsec_nanos());
 
             let events: Vec<glutin::Event> = renderer.display.poll_events().collect();
             ui.handle_events(&events);
@@ -61,6 +59,15 @@ fn main() {
 //                .changed() { println!("pink circle!"); };
 
             renderer.render();
+
+            // break the loop on esc or window close.
+            for event in events {
+                match event {
+                    glutin::Event::Closed => break 'main,
+                    glutin::Event::KeyboardInput(glutin::ElementState::Pressed, _, Some(glutin::VirtualKeyCode::Escape)) => break 'main,
+                    _ => ()
+                }
+            }
 
             last_update = now;
         }
