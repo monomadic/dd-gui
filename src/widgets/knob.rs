@@ -43,8 +43,13 @@ impl Knob {
         let mouse_inside = ui.mouse_inside_rect(self.position.clone());
         let is_focus = ui.is_focused(id.clone());
 
-        if mouse_inside && !ui.is_locked() {
-            ui.set_hovered(id.clone());
+
+
+        if !ui.is_locked() {
+            if mouse_inside {
+                ui.set_hovered(id.clone());
+            }
+
         };
 
         for event in events {

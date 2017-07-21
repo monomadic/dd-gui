@@ -43,6 +43,11 @@ fn main() {
                 .handle(&events, &mut ui, "green button".to_string())
                 .draw(&mut renderer);
 
+            Button::new(Rect{ origin: Point::new(130., 100.), size: Point::new(10., 100.) })
+                .color(color::YELLOW)
+                .handle(&events, &mut ui, "yellow button".to_string())
+                .draw(&mut renderer);
+
             Button::new(Rect{ origin: Point::new(10., 10.), size: Point::new(50., 40.) })
                 .draw(&mut renderer);
 

@@ -1,14 +1,6 @@
-//use std::io;
-//use std::path::{PathBuf, Path};
-//use std::fs::File;
-//use std::io::Read;
-
 use cgmath;
-
 use glium;
 use glium::Surface;
-//use glium::uniforms::*;
-//use widgets::*;
 
 use Rect;
 use color::Color;

@@ -8,8 +8,8 @@ use Renderer;
 /// need a way of keeping track of multi-frame info eg. the mouses state, dragging, etc.
 #[derive(Clone, Debug)]
 pub struct Ui {
-    pub mouse:              MouseState,
     size:                   (f32, f32),
+    pub mouse:              MouseState,
     pub focused_widget:     Option<FocusedWidget>,
 }
 
@@ -22,6 +22,7 @@ pub struct FocusedWidget {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum FocusedWidgetState {
+    Idle,
     Hovered,
     Pressed,
 }
@@ -57,6 +58,10 @@ impl Ui {
         }
     }
 
+    pub fn is_mouse_down(&self) -> bool {
+        self.mouse.state == MouseButton::Down
+    }
+
     pub fn set_hovered(&mut self, id: String) {
         self.focused_widget = Some(
             FocusedWidget {
@@ -86,7 +91,7 @@ impl Ui {
         }
     }
 
-    // a widget has control and has locked the focus. can be forcibly broken of course.
+    // a widget has control and has locked the focus. can be forcibly broken.
     pub fn is_locked(&self) -> bool {
         match self.focused_widget {
             Some(ref w) => { w.state == FocusedWidgetState::Pressed }
@@ -102,6 +107,7 @@ impl Ui {
                 }
 
                 &glutin::Event::MouseInput(glutin::ElementState::Released, glutin::MouseButton::Left) => {
+                    self.clear_focus();
                     self.mouse.state = MouseButton::Up;
                 }
 
