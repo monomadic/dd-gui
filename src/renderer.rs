@@ -85,19 +85,8 @@ impl Renderer {
 
                     let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
 
-                    let shape = vec![
-                        Vertex { position: [ min.x, min.y ] },
-                        Vertex { position: [ max.x, max.y ] },
-                        Vertex { position: [ min.x, max.y ] },
-                        Vertex { position: [ min.x, min.y ] },
-                        Vertex { position: [ max.x, max.y ] },
-                        Vertex { position: [ max.x, min.y ] },
-                    ];
-
-                    let vertex_buffer = glium::VertexBuffer::new(&self.display, &shape).unwrap();
-
                     target.draw(
-                        &vertex_buffer,
+                        &quad(&self.display, position),
                         &indices,
                         &self.circle_program,
                         &uniforms,
@@ -109,36 +98,12 @@ impl Renderer {
                         ortho_projection: projection,
                         u_resolution: [view_width, view_height],
                         u_color: color.as_f32(),
-//                        scale_matrix: [
-//                            [ (position.width / view_width), 0., 0., 0. ], // x
-//                            [ 0., (position.height / view_height), 0., 0. ], // y
-//                            [ 0., 0., 1., 0. ], // z
-//                            [ 0., 0., 0., 1.0f32 ],
-//                        ],
-//                        offset_matrix: [
-//                            [ 1., 0., 0., (view_width / 2.0) + position.origin.x ], // x
-//                            [ 0., 1., 0., (view_height / 2.0) + position.origin.y ], // y
-//                            [ 0., 0., 1., 1. ], // z
-//                            [ 0., 0., 0., 1.0f32 ],
-//                        ]
                     };
 
                     let indices = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
 
-                    let (min, max) = position.coords();
-                    let shape = vec![
-                        Vertex { position: [ min.x, min.y ] },
-                        Vertex { position: [ max.x, max.y ] },
-                        Vertex { position: [ min.x, max.y ] },
-                        Vertex { position: [ min.x, min.y ] },
-                        Vertex { position: [ max.x, max.y ] },
-                        Vertex { position: [ max.x, min.y ] },
-                    ];
-
-                    let vertex_buffer = glium::VertexBuffer::new(&self.display, &shape).unwrap();
-
                     target.draw(
-                        &vertex_buffer,
+                        &quad(&self.display, position),
                         &indices,
                         &self.triangle_program,
                         &uniforms,
@@ -160,3 +125,15 @@ pub fn program_from_shader(display: &glium::Display, vertex_shader: &str, fragme
         None).expect("program to complete.")
 }
 
+fn quad(display: &glium::Display, position: Rect) -> glium::VertexBuffer<Vertex> {
+    let (min, max) = position.coords();
+    let shape = vec![
+        Vertex { position: [min.x, min.y] },
+        Vertex { position: [max.x, max.y] },
+        Vertex { position: [min.x, max.y] },
+        Vertex { position: [min.x, min.y] },
+        Vertex { position: [max.x, max.y] },
+        Vertex { position: [max.x, min.y] },
+    ];
+    glium::VertexBuffer::new(display, &shape).unwrap()
+}
