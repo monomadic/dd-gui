@@ -186,8 +186,6 @@ impl Ui {
             (self.size.1 - (self.mouse.position.y / 2.)));
         let (min, max) = rect.coords();
 
-//        println!("testing: {:?}", (x, y, min, max));
-
         (x > min.x && y > min.y &&
             x < max.x && y < max.y)
     }

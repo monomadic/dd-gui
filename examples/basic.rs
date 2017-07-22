@@ -1,12 +1,6 @@
 extern crate dd_gui;
 
-//use dd_gui::winit;
-//use dd_gui::winit::WindowBuilder;
 use dd_gui::glutin;
-//use dd_gui::glutin::winit;
-//use dd_gui::glium::{ DisplayBuild };
-//use dd_gui::glutin::winit;
-
 use dd_gui::glium;
 
 use dd_gui::{ Point, Rect };
@@ -14,22 +8,6 @@ use dd_gui::widgets::{ Button, Knob };
 use dd_gui::color;
 
 fn main() {
-//    let wb = glutin::winit::WindowBuilder::new()
-//        .with_dimensions(640,480)
-//        .with_transparency(false);
-//
-//    let display = glutin::WindowBuilder::from_winit_builder(wb)
-//        .with_decorations(true)
-//        .with_vsync()
-//        .build_glium()
-//        .unwrap();
-
-//    use glium::DisplayBuild;
-//    let display = glium::glutin::WindowBuilder::new()
-//        .with_dimensions(640,480)
-//        .build_glium()
-//        .unwrap();
-
     let mut events_loop = glutin::EventsLoop::new();
     let window = glutin::WindowBuilder::new().with_dimensions(640,480);
     let context = glutin::ContextBuilder::new();
