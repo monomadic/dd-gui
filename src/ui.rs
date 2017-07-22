@@ -149,28 +149,34 @@ impl Ui {
             self.mouse.state = MouseButton::Idle;
         }
 
+        use winit::{ Event, WindowEvent };
+
         // updates mouse state
         for event in events {
-//            println!("{:?}", event);
-//            match event {
-//                &MouseInput(ElementState::Pressed, glutin::MouseButton::Left) => {
-//                    // clear the focus on a mouse down (if any widget misbehaves this should override).
-//                    self.clear_focus();
-//                    self.mouse.state = MouseButton::Down;
-//                }
-//
-//                &MouseMoved(x, y) => {
-//                    self.mouse.position = Point { x: x as f32, y: y as f32 };
-//                }
-//
-//                &MouseInput(ElementState::Released, glutin::MouseButton::Left) => {
-//                    self.mouse.state = MouseButton::Up;
-//                }
-//
-//                _ => {
-////                    println!("{:?}", event);
-//                }
-//            }
+            match event {
+                &Event::WindowEvent { ref event, .. } => {
+                    match event {
+
+                        &MouseInput{ state: ElementState::Pressed, button: glutin::MouseButton::Left, .. } => {
+                            // clear the focus on a mouse down (if any widget misbehaves this should override).
+                            self.clear_focus();
+                            self.mouse.state = MouseButton::Down;
+                        },
+
+                        &MouseInput{ state: ElementState::Released, button: glutin::MouseButton::Left, .. } => {
+                            // clear the focus on a mouse down (if any widget misbehaves this should override).
+                            self.mouse.state = MouseButton::Up;
+                        },
+
+                        &MouseMoved{ position: (x, y), .. } => {
+                            self.mouse.position = Point { x: x as f32, y: y as f32 };
+                        }
+
+                        _ => ()
+                    }
+                },
+                _ => ()
+            }
         }
     }
 
