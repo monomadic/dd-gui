@@ -44,7 +44,9 @@ impl Renderer {
 
     pub fn get_inner_size_points(&mut self) -> (f32, f32) {
         let points = self.display.get_framebuffer_dimensions();
-        (points.0 as f32, points.1 as f32)
+        println!("{:?}", ((points.0 / 2) as f32, (points.1 / 2) as f32));
+
+        ((points.0 / 2) as f32, (points.1 / 2) as f32)
     }
 
     pub fn render(&mut self) {
@@ -52,6 +54,7 @@ impl Renderer {
         target.clear_color(0.005, 0.005, 0.005, 1.0);
 
         let (view_width, view_height) = self.get_inner_size_points();
+
         let projection: [[f32; 4]; 4] = cgmath::ortho(0.0, view_width, 0.0, view_height, -1.0, 1.0).into();
 
         let draw_params = glium::DrawParameters {

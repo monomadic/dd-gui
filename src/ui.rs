@@ -151,7 +151,7 @@ impl Ui {
 
         // updates mouse state
         for event in events {
-            println!("{:?}", event);
+//            println!("{:?}", event);
 //            match event {
 //                &MouseInput(ElementState::Pressed, glutin::MouseButton::Left) => {
 //                    // clear the focus on a mouse down (if any widget misbehaves this should override).

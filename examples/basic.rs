@@ -88,7 +88,6 @@ fn main() {
 
             // break the loop on esc or window close.
             for event in events {
-                println!("{:?}", event);
                 match event {
                     Event::WindowEvent { event, .. } => {
                         match event {
