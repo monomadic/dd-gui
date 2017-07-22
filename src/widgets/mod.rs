@@ -1,5 +1,6 @@
 use glium::Frame;
-use glium::backend::glutin_backend::GlutinFacade;
+//use glium::backend::glutin_backend::GlutinFacade;
+use glium::backend::glutin::Display;
 
 //use Rect;
 
@@ -10,7 +11,7 @@ mod button;
 pub use self::button::Button;
 
 pub trait Widget {
-    fn new(display: &GlutinFacade) -> Self;
+    fn new(display: &Display) -> Self;
     fn draw(&self, target: &mut Frame);
 //    fn position(&self) -> Rect;
 }

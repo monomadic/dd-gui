@@ -4,9 +4,9 @@ version = "0.1.0"
 authors = ["Rob Saunders <rob@wearebrandnew.com>"]
 
 [dependencies]
-glium = "0.16.0"
-glutin = "0.7.0"
-winit = "0.5.11"
+glium = "0.17.0"
+glutin = "0.9.1"
+winit = "0.7.5"
 cgmath = "0.14.1"
 
 [lib]
@@ -14,3 +14,6 @@ name = "dd_gui"
 
 [[example]]
 name = "basic"
+
+#[replace]
+#"winit:0.7.0" = { path = "/Users/rob/Projects/winit" }

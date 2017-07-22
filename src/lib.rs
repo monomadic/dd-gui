@@ -5,7 +5,6 @@
 pub extern crate winit;
 pub extern crate glutin;
 
-
 pub extern crate cgmath;
 pub type Matrix2 = cgmath::Matrix2<f64>;
 pub type Matrix3 = cgmath::Matrix3<f64>;

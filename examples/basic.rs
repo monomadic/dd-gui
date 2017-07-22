@@ -1,23 +1,39 @@
 extern crate dd_gui;
 
-use dd_gui::winit;
+//use dd_gui::winit;
+//use dd_gui::winit::WindowBuilder;
 use dd_gui::glutin;
-use dd_gui::glium::{ DisplayBuild };
+//use dd_gui::glutin::winit;
+//use dd_gui::glium::{ DisplayBuild };
+//use dd_gui::glutin::winit;
+
+use dd_gui::glium;
 
 use dd_gui::{ Point, Rect };
 use dd_gui::widgets::{ Button, Knob };
 use dd_gui::color;
 
 fn main() {
-    let wb = winit::WindowBuilder::new()
-        .with_dimensions(640,480)
-        .with_transparency(false);
+//    let wb = glutin::winit::WindowBuilder::new()
+//        .with_dimensions(640,480)
+//        .with_transparency(false);
+//
+//    let display = glutin::WindowBuilder::from_winit_builder(wb)
+//        .with_decorations(true)
+//        .with_vsync()
+//        .build_glium()
+//        .unwrap();
 
-    let display = glutin::WindowBuilder::from_winit_builder(wb)
-        .with_decorations(true)
-        .with_vsync()
-        .build_glium()
-        .unwrap();
+//    use glium::DisplayBuild;
+//    let display = glium::glutin::WindowBuilder::new()
+//        .with_dimensions(640,480)
+//        .build_glium()
+//        .unwrap();
+
+    let mut events_loop = glutin::EventsLoop::new();
+    let window = glutin::WindowBuilder::new().with_dimensions(640,480);
+    let context = glutin::ContextBuilder::new();
+    let display = glium::Display::new(window, context, &events_loop).unwrap();
 
     let mut renderer = dd_gui::Renderer::new(display);
     let mut ui = dd_gui::Ui::new(&mut renderer);
@@ -35,7 +51,9 @@ fn main() {
             // Display FPS:
             // println!("FPS: {}", 1_000_000_000 / duration_since_last_update.subsec_nanos());
 
-            let events: Vec<glutin::Event> = renderer.display.poll_events().collect();
+            let mut events = Vec::new();
+            events_loop.poll_events(|e| events.push(e));
+
             ui.handle_events(&events);
 
             Button::new(Rect{ origin: Point::new(100., 100.), size: Point::new(10., 100.) })
@@ -65,11 +83,22 @@ fn main() {
 
             renderer.render();
 
+            use dd_gui::winit;
+            use dd_gui::winit::{ControlFlow, Event, WindowEvent};
+
             // break the loop on esc or window close.
             for event in events {
+                println!("{:?}", event);
                 match event {
-                    glutin::Event::Closed => break 'main,
-                    glutin::Event::KeyboardInput(glutin::ElementState::Pressed, _, Some(glutin::VirtualKeyCode::Escape)) => break 'main,
+                    Event::WindowEvent { event, .. } => {
+                        match event {
+                            WindowEvent::Closed => { break 'main },
+                            WindowEvent::KeyboardInput {
+                                input: winit::KeyboardInput { virtual_keycode: Some(winit::VirtualKeyCode::Escape), .. }, ..
+                            } => { break 'main },
+                            _ => ()
+                        }
+                    },
                     _ => ()
                 }
             }

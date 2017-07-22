@@ -43,10 +43,7 @@ impl Renderer {
     }
 
     pub fn get_inner_size_points(&mut self) -> (f32, f32) {
-        let points = self.display.get_window()
-            .expect("window to exist")
-            .get_inner_size_points()
-            .expect("window to exist");
+        let points = self.display.get_framebuffer_dimensions();
         (points.0 as f32, points.1 as f32)
     }
 

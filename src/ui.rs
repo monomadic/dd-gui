@@ -141,7 +141,7 @@ impl Ui {
     }
 
     pub fn handle_events(&mut self, events: &[glutin::Event]) {
-        use glutin::Event::{ MouseInput, MouseMoved };
+        use glutin::WindowEvent::{ MouseInput, MouseMoved };
         use glutin::{ ElementState };
 
         // reset the mouse button on a mouseup from the previous frame, otherwise it will click forever.
@@ -151,25 +151,26 @@ impl Ui {
 
         // updates mouse state
         for event in events {
-            match event {
-                &MouseInput(ElementState::Pressed, glutin::MouseButton::Left) => {
-                    // clear the focus on a mouse down (if any widget misbehaves this should override).
-                    self.clear_focus();
-                    self.mouse.state = MouseButton::Down;
-                }
-
-                &MouseMoved(x, y) => {
-                    self.mouse.position = Point { x: x as f32, y: y as f32 };
-                }
-
-                &MouseInput(ElementState::Released, glutin::MouseButton::Left) => {
-                    self.mouse.state = MouseButton::Up;
-                }
-
-                _ => {
-//                    println!("{:?}", event);
-                }
-            }
+            println!("{:?}", event);
+//            match event {
+//                &MouseInput(ElementState::Pressed, glutin::MouseButton::Left) => {
+//                    // clear the focus on a mouse down (if any widget misbehaves this should override).
+//                    self.clear_focus();
+//                    self.mouse.state = MouseButton::Down;
+//                }
+//
+//                &MouseMoved(x, y) => {
+//                    self.mouse.position = Point { x: x as f32, y: y as f32 };
+//                }
+//
+//                &MouseInput(ElementState::Released, glutin::MouseButton::Left) => {
+//                    self.mouse.state = MouseButton::Up;
+//                }
+//
+//                _ => {
+////                    println!("{:?}", event);
+//                }
+//            }
         }
     }
 
