@@ -43,38 +43,31 @@ impl Button {
         );
     }
 
-    pub fn handle(mut self, events: &[glutin::Event], ui: &mut Ui, id: String) -> Self {
+    pub fn handle_events(mut self, events: &[glutin::Event], ui: &mut Ui, id: String) -> Self {
         let mouse_inside = ui.mouse_inside_rect(self.position.clone());
         let is_focus = ui.is_focused(id.clone());
-        let mouse_is_down = ui.is_mouse_down();
 
-//        let mut button_is_down = false;
 //        for event in events {
 //            match event {
-//                &glutin::Event::MouseInput(glutin::ElementState::Pressed, glutin::MouseButton::Left) => {
-//                    if mouse_inside {
-//                        button_is_down = true;
+//                &glutin::Event::MouseInput(glutin::ElementState::Released, glutin::MouseButton::Left) => {
+//                    if mouse_inside && is_focus {
+//                        println!("clicked: {}", id);
 //                    }
 //                },
 //                _ => ()
 //            }
 //        }
 
-
-
-        if mouse_inside {
-            if !ui.is_locked() {
-                if mouse_is_down {
-                } else {
-                    ui.set_hovered(id.clone());
-                    self.color = color::BLUE;
+        match ui.update(id.clone(), self.position.clone()) {
+            Some(state) => {
+                match state {
+                    FocusedWidgetState::Hovered => { self.color = color::BLUE; }
+                    FocusedWidgetState::Pressed => { self.color = color::RED; }
+                    FocusedWidgetState::Activated => { self.color = color::BLUE; println!("clicked: {}", id.clone()); }
                 }
-            }
-        }
-        if is_focus && mouse_is_down {
-            ui.set_pressed(id.clone());
-            self.color = color::RED;
-        }
+            },
+            None => ()
+        };
 
         self
     }

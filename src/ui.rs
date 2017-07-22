@@ -22,9 +22,9 @@ pub struct FocusedWidget {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum FocusedWidgetState {
-    Idle,
     Hovered,
     Pressed,
+    Activated,
 }
 
 /// WidgetState:
@@ -44,6 +44,7 @@ pub struct MouseState {
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum MouseButton {
+    Idle,
     Down,
     Up,
 }
@@ -52,7 +53,7 @@ impl Ui {
     pub fn new(renderer: &mut Renderer) -> Self {
         let size = renderer.get_inner_size_points();
         Self {
-            mouse: MouseState { position: Point{ x:0., y:0. }, state: MouseButton::Up },
+            mouse: MouseState { position: Point{ x:0., y:0. }, state: MouseButton::Idle },
             size: size,
             focused_widget: None,
         }
@@ -69,6 +70,46 @@ impl Ui {
                 state: FocusedWidgetState::Hovered,
             }
         );
+    }
+
+    /// Updates widget state against ui
+    pub fn update(&mut self, id: String, position: Rect) -> Option<FocusedWidgetState> {
+        let mouse_inside = self.mouse_inside_rect(position);
+        let is_focus = self.is_focused(id.clone());
+        let mouse_is_down = self.is_mouse_down();
+        let ui_locked = self.is_locked();
+        let mouse_was_clicked = self.mouse.state == MouseButton::Up;
+
+        if mouse_was_clicked && is_focus {
+            // a mouseup occurred somewhere in the widget.
+            self.clear_focus();
+            if mouse_inside {
+                // widget has completed a click.
+                return Some(FocusedWidgetState::Activated);
+            } else {
+                // user cancelled by mousing up outside the widget.
+                return None;
+            }
+        }
+
+        if mouse_inside && !ui_locked {
+            if mouse_is_down {
+                // mouse has been depressed on the widget.
+                self.set_pressed(id.clone());
+                return Some(FocusedWidgetState::Pressed);
+            } else {
+                // mouse is hovering over widget.
+                self.set_hovered(id.clone());
+                return Some(FocusedWidgetState::Hovered);
+            }
+        };
+
+        if is_focus && mouse_is_down {
+            // mouse was depressed on the widget and has moved outside the widget.
+            return Some(FocusedWidgetState::Pressed);
+        }
+
+        None
     }
 
     pub fn set_pressed(&mut self, id: String) {
@@ -100,23 +141,33 @@ impl Ui {
     }
 
     pub fn handle_events(&mut self, events: &[glutin::Event]) {
+        use glutin::Event::{ MouseInput, MouseMoved };
+        use glutin::{ ElementState };
+
+        // reset the mouse button on a mouseup from the previous frame, otherwise it will click forever.
+        if self.mouse.state == MouseButton::Up {
+            self.mouse.state = MouseButton::Idle;
+        }
+
+        // updates mouse state
         for event in events {
             match event {
-                &glutin::Event::MouseInput(glutin::ElementState::Pressed, glutin::MouseButton::Left) => {
+                &MouseInput(ElementState::Pressed, glutin::MouseButton::Left) => {
+//                    println!("{:?}", event);
+                    self.clear_focus();
                     self.mouse.state = MouseButton::Down;
                 }
 
-                &glutin::Event::MouseInput(glutin::ElementState::Released, glutin::MouseButton::Left) => {
-                    self.clear_focus();
-                    self.mouse.state = MouseButton::Up;
-                }
-
-                &glutin::Event::MouseMoved(x, y) => {
+                &MouseMoved(x, y) => {
                     self.mouse.position = Point { x: x as f32, y: y as f32 };
                 }
 
-                _ => {
+                &MouseInput(ElementState::Released, glutin::MouseButton::Left) => {
                     self.mouse.state = MouseButton::Up;
+                }
+
+                _ => {
+//                    println!("{:?}", event);
                 }
             }
         }

@@ -43,34 +43,35 @@ impl Knob {
         let mouse_inside = ui.mouse_inside_rect(self.position.clone());
         let is_focus = ui.is_focused(id.clone());
 
-
-
-        if !ui.is_locked() {
-            if mouse_inside {
-                ui.set_hovered(id.clone());
-            }
-
+        match ui.update(id, self.position.clone()) {
+            Some(state) => {
+                match state {
+                    FocusedWidgetState::Hovered => { self.color = color::BLUE; }
+                    FocusedWidgetState::Pressed => {
+                        println!("knob widget is turning");
+                        self.state = KnobState::Turning;
+                        self.color = color::RED;
+                    }
+                    FocusedWidgetState::Activated => {
+                        println!("kknob widget stopped turning");
+                    }
+                }
+            },
+            None => ()
         };
 
-        for event in events {
-            match event {
-                &glutin::Event::MouseInput(glutin::ElementState::Pressed, glutin::MouseButton::Left) => {
-                    if mouse_inside {
-                        ui.set_pressed(id.clone());
-                        self.state = KnobState::Turning;
-                        println!("knob widget is turning");
-                    }
-                }
-                &glutin::Event::MouseInput(glutin::ElementState::Released, glutin::MouseButton::Left) => {
-                    if is_focus {
-                        ui.clear_focus();
-                        self.state = KnobState::Idle; // we still need to care about this because we're processing a batch of events.
-                        println!("knob widget stopped turning");
-                    }
-                }
-                _ => ()
-            }
-        }
+
+//        for event in events {
+//            match event {
+//                &glutin::Event::MouseInput(glutin::ElementState::Released, glutin::MouseButton::Left) => {
+//                    if mouse_inside {
+//                        self.state = KnobState::Idle; // we still need to care about this because we're processing a batch of events.
+//                        println!("knob widget stopped turning");
+//                    }
+//                }
+//                _ => ()
+//            }
+//        }
 
         self
     }
