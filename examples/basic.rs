@@ -84,7 +84,7 @@ fn main() {
             renderer.render();
 
             use dd_gui::winit;
-            use dd_gui::winit::{ControlFlow, Event, WindowEvent};
+            use dd_gui::winit::{ Event, WindowEvent };
 
             // break the loop on esc or window close.
             for event in events {

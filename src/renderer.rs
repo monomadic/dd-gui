@@ -43,10 +43,8 @@ impl Renderer {
     }
 
     pub fn get_inner_size_points(&mut self) -> (f32, f32) {
-        let points = self.display.get_framebuffer_dimensions();
-        println!("{:?}", ((points.0 / 2) as f32, (points.1 / 2) as f32));
-
-        ((points.0 / 2) as f32, (points.1 / 2) as f32)
+        let points = self.display.gl_window().get_inner_size_points().unwrap();
+        (points.0 as f32, points.1 as f32)
     }
 
     pub fn render(&mut self) {
