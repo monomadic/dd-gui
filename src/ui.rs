@@ -153,7 +153,7 @@ impl Ui {
         for event in events {
             match event {
                 &MouseInput(ElementState::Pressed, glutin::MouseButton::Left) => {
-//                    println!("{:?}", event);
+                    // clear the focus on a mouse down (if any widget misbehaves this should override).
                     self.clear_focus();
                     self.mouse.state = MouseButton::Down;
                 }
